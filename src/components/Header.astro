@@ -1,0 +1,132 @@
+---
+import "../styles/globals.css";
+
+const currentPath = Astro.url.pathname;
+---
+<header class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex h-16 items-center justify-between">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <span class="text-3xl">👓</span>
+        <span class="text-2xl text-green-700">TaVue</span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-6">
+        <a 
+          href="/"
+          class={`px-4 py-2 rounded-xl transition-all ${
+            currentPath === '/' 
+              ? 'bg-green-700 text-white' 
+              : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+          }`}
+        >
+          Accueil
+        </a>
+        <a 
+          href="/configurator"
+          class={`px-4 py-2 rounded-xl transition-all ${
+            currentPath === '/configurator' 
+              ? 'bg-green-700 text-white' 
+              : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+          }`}
+        >
+          Configurateur
+        </a>
+        <a 
+          href="/gallery"
+          class={`px-4 py-2 rounded-xl transition-all ${
+            currentPath === '/gallery' 
+              ? 'bg-green-700 text-white' 
+              : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+          }`}
+        >
+          Ma Galerie
+        </a>
+        <a 
+          href="/cart"
+          class={`relative px-4 py-2 rounded-xl transition-all ${
+            currentPath === '/cart' 
+              ? 'bg-green-700 text-white' 
+              : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+          }`}
+        >
+          🛒 Panier
+          <span 
+            id="cart-badge" 
+            class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden"
+          >
+            0
+          </span>
+        </a>
+        <a 
+          href="/auth"
+          class={`px-4 py-2 rounded-xl transition-all ${
+            currentPath === '/auth' 
+              ? 'bg-green-700 text-white' 
+              : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+          }`}
+        >
+          Mon Compte
+        </a>
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-700 hover:text-green-700">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 bg-white">
+    <nav class="px-6 py-4 space-y-2">
+      <a href="/" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700">
+        Accueil
+      </a>
+      <a href="/configurator" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700">
+        Configurateur
+      </a>
+      <a href="/gallery" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700">
+        Ma Galerie
+      </a>
+      <a href="/cart" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700">
+        🛒 Panier
+      </a>
+      <a href="/auth" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700">
+        Mon Compte
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Mobile menu toggle
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+
+  // Update cart count (to be connected with PocketBase)
+  function updateCartCount() {
+    // TODO: Fetch from PocketBase
+    // const cart = await pb.collection('cart').getList();
+    const count = 0; // Replace with actual count
+    
+    const badge = document.getElementById('cart-badge');
+    if (badge) {
+      badge.textContent = count.toString();
+      badge.classList.toggle('hidden', count === 0);
+    }
+  }
+
+  updateCartCount();
+
+  // Listen for cart updates
+  window.addEventListener('cart-updated', updateCartCount);
+</script>
