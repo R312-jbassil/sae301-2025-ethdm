@@ -1,6 +1,39 @@
 ---
-// ConfiguratorPage - Interface de configuration (données PocketBase)
-import GlassesSVG from './GlassesSVG.astro';
+import GlassesSVG from "./GlassesSVG.astro";
+import pb from "../utils/pb.ts";
+// Chargement des matériaux côté serveur avec Astro
+
+const frameMaterials = await pb.collection("mat_montures").getFullList(200);
+// on map et on utilise le champ select:
+const frameMaterialOptions = frameMaterials.map((record) => ({
+  id: record.id,
+  label: record.matiere_montures,
+}));
+
+const branchMaterials = await pb.collection("mat_branches").getFullList(200);
+const branchMaterialOptions = branchMaterials.map((record) => ({
+  id: record.id,
+  label: record.matiere_branches,
+}));
+
+// Astro frontmatter
+const matMontureSchema = await pb.collection("mat_montures").getOne(""); // On récupère la collection elle-même
+const matMontureField = matMontureSchema.schema.find(
+  (f) => f.name === "matiere_montures",
+);
+const matMontureOptions = matMontureField.options.values; // ["Acétate", "Métal", "Titane", "Bois"]
+
+const matBrancheSchema = await pb.collection("mat_branches").getOne("");
+const matBrancheField = matBrancheSchema.schema.find(
+  (f) => f.name === "matiere_branches",
+);
+const matBrancheOptions = matBrancheField.options.values;
+
+const record = await pb.collection('lunettes').create({
+  mat_monture: selectedFrameMaterialId,
+  mat_branche: selectedBranchMaterialId,
+  // autres champs...
+});
 ---
 
 <div class="min-h-screen bg-gradient-to-b from-white to-green-50/30 py-12">
@@ -8,29 +41,41 @@ import GlassesSVG from './GlassesSVG.astro';
     <!-- Header -->
     <div class="text-center mb-12">
       <h1 class="text-4xl text-gray-900 mb-4">CONFIGURATEUR DE LUNETTES</h1>
-      <p class="text-gray-600">Créez vos lunettes personnalisées étape par étape</p>
+      <p class="text-gray-600">
+        Créez vos lunettes personnalisées étape par étape
+      </p>
     </div>
 
     <!-- Progress Bar -->
     <div class="mb-12">
       <div class="flex justify-between mb-4" id="progress-steps">
-        {[
-          { id: 1, title: 'Matériaux' },
-          { id: 2, title: 'Dimensions' },
-          { id: 3, title: 'Couleurs' },
-          { id: 4, title: 'IA Créative' },
-          { id: 5, title: 'Aperçu final' }
-        ].map((step) => (
-          <div class="flex flex-col items-center step-indicator" data-step={step.id}>
-            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 step-circle transition-all">
-              {step.id}
+        {
+          [
+            { id: 1, title: "Matériaux" },
+            { id: 2, title: "Dimensions" },
+            { id: 3, title: "Couleurs" },
+            { id: 4, title: "IA Créative" },
+            { id: 5, title: "Aperçu final" },
+          ].map((step) => (
+            <div
+              class="flex flex-col items-center step-indicator"
+              data-step={step.id}
+            >
+              <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 step-circle transition-all">
+                {step.id}
+              </div>
+              <span class="text-xs mt-2 text-gray-600">{step.title}</span>
             </div>
-            <span class="text-xs mt-2 text-gray-600">{step.title}</span>
-          </div>
-        ))}
+          ))
+        }
       </div>
       <div class="w-full bg-gray-200 rounded-full h-2">
-        <div id="progress-bar" class="bg-[#2C7319] h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+        <div
+          id="progress-bar"
+          class="bg-[#2C7319] h-2 rounded-full transition-all duration-300"
+          style="width: 20%"
+        >
+        </div>
       </div>
     </div>
 
@@ -40,164 +85,289 @@ import GlassesSVG from './GlassesSVG.astro';
         <div id="config-content">
           <!-- Step 1: Matériaux -->
           <div class="step-content" data-step="1">
-            <h2 class="text-2xl text-gray-900 mb-6">Choisissez vos matériaux</h2>
-            
+            <h2 class="text-2xl text-gray-900 mb-6">
+              Choisissez vos matériaux
+            </h2>
             <div class="mb-6">
-              <label class="block text-sm text-gray-700 mb-3">Matériau de la monture</label>
-              <div class="grid grid-cols-2 gap-4">
-                {[
-                  { id: 'acetate', name: 'Acétate', desc: 'Léger et confortable' },
-                  { id: 'metal', name: 'Métal', desc: 'Élégant et durable' },
-                  { id: 'titanium', name: 'Titane', desc: 'Premium et résistant' },
-                  { id: 'wood', name: 'Bois', desc: 'Naturel et unique' }
-                ].map((material) => (
-                  <label class="material-option border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-[#2C7319] transition-all">
-                    <input type="radio" name="frameMaterial" value={material.id} class="hidden material-radio" />
-                    <div class="text-sm text-gray-900 mb-1">{material.name}</div>
-                    <div class="text-xs text-gray-600">{material.desc}</div>
-                  </label>
-                ))}
-              </div>
+              <label class="block text-sm text-gray-700 mb-3"
+                >Matériau de la monture</label
+              >
+              <select
+                id="frame-material"
+                class="w-full border border-gray-300 rounded-xl p-3"
+              >
+                {
+                  frameMaterials.map((material) => (
+                    <option value={material.id}>
+                      {material.matiere_montures}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+            <div class="mb-6">
+              <label class="block text-sm text-gray-700 mb-3"
+                >Matériau des branches</label
+              >
+              <select
+                id="branch-material"
+                class="w-full border border-gray-300 rounded-xl p-3"
+              >
+                {
+                  branchMaterials.map((material) => (
+                    <option value={material.id}>
+                      {material.matiere_branches}
+                    </option>
+                  ))
+                }
+              </select>
             </div>
           </div>
-
           <!-- Step 2: Dimensions -->
           <div class="step-content hidden" data-step="2">
             <h2 class="text-2xl text-gray-900 mb-6">Ajustez les dimensions</h2>
-            
             <div class="space-y-6">
               <div>
-                <label class="block text-sm text-gray-700 mb-3">Largeur du pont : <span id="bridge-value">18</span>mm</label>
-                <input type="range" min="14" max="22" value="18" class="w-full dimension-slider" data-target="bridge-value" />
+                <label class="block text-sm text-gray-700 mb-3"
+                  >Largeur du pont : <span id="bridge-value">18</span>mm</label
+                >
+                <input
+                  type="range"
+                  min="14"
+                  max="22"
+                  value="18"
+                  id="bridge-slider"
+                  class="w-full dimension-slider"
+                />
               </div>
-              
               <div>
-                <label class="block text-sm text-gray-700 mb-3">Largeur des verres : <span id="lens-value">50</span>mm</label>
-                <input type="range" min="45" max="60" value="50" class="w-full dimension-slider" data-target="lens-value" />
+                <label class="block text-sm text-gray-700 mb-3"
+                  >Largeur des verres : <span id="lens-value">50</span>mm</label
+                >
+                <input
+                  type="range"
+                  min="45"
+                  max="60"
+                  value="50"
+                  id="lens-slider"
+                  class="w-full dimension-slider"
+                />
               </div>
             </div>
           </div>
-
           <!-- Step 3: Couleurs -->
           <div class="step-content hidden" data-step="3">
-            <h2 class="text-2xl text-gray-900 mb-6">Personnalisez les couleurs</h2>
-            
+            <h2 class="text-2xl text-gray-900 mb-6">
+              Personnalisez les couleurs
+            </h2>
             <div class="space-y-6">
               <div>
-                <label class="block text-sm text-gray-700 mb-3">Couleur de la monture</label>
-                <input type="color" value="#2C7319" class="w-full h-12 rounded-lg border border-gray-300" id="frame-color" />
+                <label class="block text-sm text-gray-700 mb-3"
+                  >Couleur de la monture</label
+                >
+                <input
+                  type="color"
+                  value="#2C7319"
+                  id="frame-color"
+                  class="w-full h-12 rounded-lg border border-gray-300"
+                />
               </div>
-              
               <div>
-                <label class="block text-sm text-gray-700 mb-3">Couleur des branches</label>
-                <input type="color" value="#1a4d0f" class="w-full h-12 rounded-lg border border-gray-300" id="temple-color" />
+                <label class="block text-sm text-gray-700 mb-3"
+                  >Couleur des branches</label
+                >
+                <input
+                  type="color"
+                  value="#1a4d0f"
+                  id="branch-color"
+                  class="w-full h-12 rounded-lg border border-gray-300"
+                />
               </div>
-              
               <div>
-                <label class="block text-sm text-gray-700 mb-3">Teinte des verres</label>
-                <input type="color" value="#87CEEB" class="w-full h-12 rounded-lg border border-gray-300" id="lens-color" />
+                <label class="block text-sm text-gray-700 mb-3"
+                  >Teinte des verres</label
+                >
+                <input
+                  type="color"
+                  value="#87CEEB"
+                  id="lens-color"
+                  class="w-full h-12 rounded-lg border border-gray-300"
+                />
               </div>
             </div>
           </div>
-
           <!-- Step 4: IA Créative -->
           <div class="step-content hidden" data-step="4">
             <h2 class="text-2xl text-gray-900 mb-6">IA Créative (optionnel)</h2>
-            
-            <div class="bg-green-50 border border-[#2C7319] rounded-xl p-4 mb-6">
+            <div
+              class="bg-green-50 border border-[#2C7319] rounded-xl p-4 mb-6"
+            >
               <div class="flex items-start gap-3">
-                <svg class="w-5 h-5 text-[#2C7319] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                <svg
+                  class="w-5 h-5 text-[#2C7319] mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                  ></path>
                 </svg>
-                <p class="text-sm text-gray-700">Décrivez le style que vous recherchez et notre IA vous proposera des ajustements</p>
+                <p class="text-sm text-gray-700">
+                  Décrivez le style que vous recherchez et notre IA vous
+                  proposera des ajustements
+                </p>
               </div>
             </div>
-            
-            <textarea 
+            <textarea
+              id="ia-text"
               class="w-full h-32 border border-gray-300 rounded-xl p-4 text-sm resize-none focus:ring-2 focus:ring-[#2C7319] focus:outline-none"
               placeholder="Ex: Je veux des lunettes élégantes et modernes pour un usage quotidien..."
             ></textarea>
           </div>
-
           <!-- Step 5: Aperçu final -->
           <div class="step-content hidden" data-step="5">
             <h2 class="text-2xl text-gray-900 mb-6">Votre création</h2>
-            
             <div class="bg-green-50 rounded-xl p-6 mb-6">
               <div class="flex items-center gap-3 mb-4">
-                <svg class="w-6 h-6 text-[#2C7319]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <svg
+                  class="w-6 h-6 text-[#2C7319]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <h3 class="text-lg text-gray-900">Configuration terminée</h3>
               </div>
               <p class="text-sm text-gray-600">
-                Vos lunettes sont prêtes ! Vous pouvez les sauvegarder dans votre galerie ou les ajouter au panier.
+                Vos lunettes sont prêtes ! Vous pouvez les sauvegarder dans
+                votre galerie ou les ajouter au panier.
               </p>
             </div>
-
             <div class="space-y-3">
-              <button class="w-full bg-[#2C7319] hover:bg-[#3a9122] text-white py-4 rounded-xl transition-all flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+              <button
+                type="button"
+                class="w-full bg-[#2C7319] hover:bg-[#3a9122] text-white py-4 rounded-xl transition-all flex items-center justify-center gap-2"
+                onclick="alert('Fonction galerie à implémenter')"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                  ></path>
                 </svg>
                 Sauvegarder dans ma galerie
               </button>
-              
-              <button class="w-full bg-white border-2 border-[#2C7319] text-[#2C7319] hover:bg-green-50 py-4 rounded-xl transition-all flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              <button
+                type="button"
+                class="w-full bg-white border-2 border-[#2C7319] text-[#2C7319] hover:bg-green-50 py-4 rounded-xl transition-all flex items-center justify-center gap-2"
+                id="add-to-cart"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  ></path>
                 </svg>
                 Ajouter au panier
               </button>
             </div>
           </div>
         </div>
-
         <!-- Navigation Buttons -->
         <div class="flex justify-between mt-8 pt-8 border-t border-gray-200">
-          <button id="prev-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
+          <button
+            id="prev-btn"
+            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled
+          >
             Précédent
           </button>
-          
-          <button id="next-btn" class="px-6 py-3 bg-[#2C7319] text-white rounded-xl hover:bg-[#3a9122] transition-all">
+          <button
+            id="next-btn"
+            class="px-6 py-3 bg-[#2C7319] text-white rounded-xl hover:bg-[#3a9122] transition-all"
+          >
             Suivant
-            <svg class="w-5 h-5 inline ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
           </button>
         </div>
       </div>
 
       <!-- Preview Panel -->
-      <div class="bg-white rounded-3xl p-8 shadow-xl sticky top-24 h-fit">
+      <div
+        id="glasses-preview"
+        class="bg-white rounded-3xl p-8 shadow-xl sticky top-24 h-fit"
+        style="
+          --branches-color: #1a4d0f;
+          --monture-color: #2C7319;
+          --verres-color: #87CEEB;
+        "
+      >
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl text-gray-900">APERÇU 3D</h2>
           <div class="flex gap-2">
-            <button class="zoom-btn w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all" data-zoom="out">-</button>
-            <button class="zoom-btn w-16 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all" data-zoom="reset">
+            <button
+              class="zoom-btn w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+              data-zoom="out">-</button
+            >
+            <button
+              class="zoom-btn w-16 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+              data-zoom="reset"
+            >
               <span id="zoom-display">100%</span>
             </button>
-            <button class="zoom-btn w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all" data-zoom="in">+</button>
+            <button
+              class="zoom-btn w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+              data-zoom="in">+</button
+            >
           </div>
         </div>
-
-        <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-12 flex items-center justify-center min-h-[400px]">
-          <div id="glasses-preview" class="transition-transform duration-300">
-            <GlassesSVG />
-          </div>
+        <div
+          class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-12 flex items-center justify-center min-h-[400px]"
+        >
+          <GlassesSVG />
         </div>
-
         <div class="mt-6 bg-green-50 rounded-xl p-4">
           <div class="flex items-start gap-3">
-            <svg class="w-5 h-5 text-[#2C7319] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            <svg
+              class="w-5 h-5 text-[#2C7319] mt-0.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
             </svg>
             <div>
               <p class="text-sm text-gray-700 mb-1">🇫🇷 Made in France</p>
-              <p class="text-xs text-gray-600">Fabrication artisanale à Montbéliard</p>
+              <p class="text-xs text-gray-600">
+                Fabrication artisanale à Montbéliard
+              </p>
             </div>
           </div>
         </div>
@@ -207,96 +377,93 @@ import GlassesSVG from './GlassesSVG.astro';
 </div>
 
 <script>
+  // Navigation logiques & états
   let currentStep = 1;
   const totalSteps = 5;
-  let zoomLevel = 1;
-
   function updateUI() {
-    // Update progress bar
-    const progress = (currentStep / totalSteps) * 100;
-    const progressBar = document.getElementById('progress-bar');
-    if (progressBar) progressBar.style.width = progress + '%';
-
-    // Update step indicators
-    document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
-      const circle = indicator.querySelector('.step-circle');
-      if (index + 1 <= currentStep) {
-        circle?.classList.add('bg-[#2C7319]', 'text-white');
-        circle?.classList.remove('bg-gray-200', 'text-gray-600');
-      } else {
-        circle?.classList.remove('bg-[#2C7319]', 'text-white');
-        circle?.classList.add('bg-gray-200', 'text-gray-600');
-      }
+    document.querySelectorAll(".step-content").forEach((c) => {
+      c.classList.add("hidden");
+      if (parseInt(c.dataset.step) === currentStep)
+        c.classList.remove("hidden");
     });
-
-    // Show/hide step content
-    document.querySelectorAll('.step-content').forEach((content) => {
-      const step = parseInt(content.getAttribute('data-step') || '0');
-      content.classList.toggle('hidden', step !== currentStep);
-    });
-
-    // Update navigation buttons
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    if (prevBtn) prevBtn.disabled = currentStep === 1;
-    if (nextBtn && currentStep === totalSteps) {
-      nextBtn.textContent = 'Terminé';
-    }
+    document.getElementById("prev-btn").disabled = currentStep === 1;
+    document.getElementById("next-btn").textContent =
+      currentStep === totalSteps ? "Terminé" : "Suivant";
+    document.getElementById("progress-bar").style.width =
+      `${(currentStep / totalSteps) * 100}%`;
   }
-
-  // Navigation
-  document.getElementById('prev-btn')?.addEventListener('click', () => {
-    if (currentStep > 1) {
-      currentStep--;
-      updateUI();
-    }
-  });
-
-  document.getElementById('next-btn')?.addEventListener('click', () => {
+  document.getElementById("prev-btn").onclick = () => {
+    if (currentStep > 1) currentStep--;
+    updateUI();
+  };
+  document.getElementById("next-btn").onclick = () => {
     if (currentStep < totalSteps) {
       currentStep++;
       updateUI();
+    } else {
+      saveLunettes();
     }
+  };
+  document.getElementById("add-to-cart").onclick = saveLunettes;
+  document.getElementById("bridge-slider").addEventListener("input", (e) => {
+    document.getElementById("bridge-value").textContent = e.target.value;
   });
-
-  // Material selection
-  document.querySelectorAll('.material-radio').forEach((radio) => {
-    radio.addEventListener('change', (e) => {
-      document.querySelectorAll('.material-option').forEach(opt => {
-        opt.classList.remove('border-[#2C7319]', 'bg-green-50');
+  document.getElementById("lens-slider").addEventListener("input", (e) => {
+    document.getElementById("lens-value").textContent = e.target.value;
+  });
+  ["frame-color", "branch-color", "lens-color"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", (e) => {
+      const cssVar =
+        id === "frame-color"
+          ? "--monture-color"
+          : id === "branch-color"
+            ? "--branches-color"
+            : "--verres-color";
+      document
+        .getElementById("glasses-preview")
+        .style.setProperty(cssVar, e.target.value);
+    });
+  });
+  // Preview zoom
+  let zoomLevel = 1;
+  document.querySelectorAll(".zoom-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const action = btn.getAttribute("data-zoom");
+      if (action === "in") zoomLevel = Math.min(zoomLevel + 0.2, 2);
+      if (action === "out") zoomLevel = Math.max(zoomLevel - 0.2, 0.6);
+      if (action === "reset") zoomLevel = 1;
+      document.getElementById("glasses-preview").style.transform =
+        `scale(${zoomLevel})`;
+      document.getElementById("zoom-display").textContent =
+        Math.round(zoomLevel * 100) + "%";
+    });
+  });
+  // Création PocketBase
+  async function saveLunettes() {
+    try {
+      const data = {
+        mat_monture: document.getElementById("frame-material").value,
+        mat_branche: document.getElementById("branch-material").value,
+        lar_pont: parseInt(document.getElementById("bridge-slider").value),
+        lar_verres: parseInt(document.getElementById("lens-slider").value),
+        montures_couleur: document.getElementById("frame-color").value,
+        branches_couleur: document.getElementById("branch-color").value,
+        "verres-couleur": document.getElementById("lens-color").value,
+        ia_text: document.getElementById("ia-text").value,
+      };
+      const res = await fetch("/api/lunettes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
-      const target = e.target as HTMLInputElement;
-      target.closest('.material-option')?.classList.add('border-[#2C7319]', 'bg-green-50');
-    });
-  });
-
-  // Dimension sliders
-  document.querySelectorAll('.dimension-slider').forEach((slider) => {
-    slider.addEventListener('input', (e) => {
-      const target = e.target as HTMLInputElement;
-      const targetId = target.getAttribute('data-target');
-      const valueEl = document.getElementById(targetId || '');
-      if (valueEl) valueEl.textContent = target.value;
-    });
-  });
-
-  // Zoom controls
-  document.querySelectorAll('.zoom-btn').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const target = e.currentTarget as HTMLElement;
-      const action = target.getAttribute('data-zoom');
-      const preview = document.getElementById('glasses-preview');
-      const display = document.getElementById('zoom-display');
-      
-      if (action === 'in') zoomLevel = Math.min(zoomLevel + 0.2, 2);
-      if (action === 'out') zoomLevel = Math.max(zoomLevel - 0.2, 0.6);
-      if (action === 'reset') zoomLevel = 1;
-      
-      if (preview) preview.style.transform = `scale(${zoomLevel})`;
-      if (display) display.textContent = Math.round(zoomLevel * 100) + '%';
-    });
-  });
-
-  // Initialize
+      if (res.ok) {
+        alert("Lunettes sauvegardées 🎉");
+      } else {
+        alert("Erreur lors de la sauvegarde");
+      }
+    } catch (err) {
+      alert(`Erreur: ${err}`);
+    }
+  }
   updateUI();
 </script>

@@ -17,16 +17,6 @@ const currentPath = Astro.url.pathname;
         <a 
           href="/"
           class={`px-4 py-2 rounded-xl transition-all ${
-            currentPath === '/' 
-              ? 'bg-[#2C7319] text-white' 
-              : 'text-gray-700 hover:bg-green-50 hover:text-[#2C7319]'
-          }`}
-        >
-          Accueil
-        </a>
-        <a 
-          href="/configurator"
-          class={`px-4 py-2 rounded-xl transition-all ${
             currentPath === '/configurator' 
               ? 'bg-[#2C7319] text-white' 
               : 'text-gray-700 hover:bg-green-50 hover:text-[#2C7319]'
@@ -52,7 +42,7 @@ const currentPath = Astro.url.pathname;
               : 'text-gray-700 hover:bg-green-50 hover:text-[#2C7319]'
           }`}
         >
-          🛒 Panier
+          Panier
           <span 
             id="cart-badge" 
             class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden"
@@ -84,17 +74,14 @@ const currentPath = Astro.url.pathname;
   <!-- Mobile Menu -->
   <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 bg-white">
     <nav class="px-6 py-4 space-y-2">
-      <a href="/" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
-        Accueil
-      </a>
-      <a href="/configurator" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
+      <a href="/index" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
         Configurateur
       </a>
       <a href="/gallery" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
         Ma Galerie
       </a>
       <a href="/cart" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
-        🛒 Panier
+        Panier
       </a>
       <a href="/auth" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
         Mon Compte
