@@ -1,15 +1,15 @@
 ---
-import "../styles/globals.css";
-
+// Header - Navigation principale
 const currentPath = Astro.url.pathname;
 ---
+
 <header class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white shadow-sm">
   <div class="max-w-7xl mx-auto px-6">
     <div class="flex h-16 items-center justify-between">
       <!-- Logo -->
       <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
         <span class="text-3xl">👓</span>
-        <span class="text-2xl text-green-700">TaVue</span>
+        <span class="text-2xl text-[#2C7319]">TaVue</span>
       </a>
 
       <!-- Desktop Navigation -->
@@ -18,8 +18,8 @@ const currentPath = Astro.url.pathname;
           href="/"
           class={`px-4 py-2 rounded-xl transition-all ${
             currentPath === '/' 
-              ? 'bg-green-700 text-white' 
-              : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+              ? 'bg-[#2C7319] text-white' 
+              : 'text-gray-700 hover:bg-green-50 hover:text-[#2C7319]'
           }`}
         >
           Accueil
@@ -28,8 +28,8 @@ const currentPath = Astro.url.pathname;
           href="/configurator"
           class={`px-4 py-2 rounded-xl transition-all ${
             currentPath === '/configurator' 
-              ? 'bg-green-700 text-white' 
-              : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+              ? 'bg-[#2C7319] text-white' 
+              : 'text-gray-700 hover:bg-green-50 hover:text-[#2C7319]'
           }`}
         >
           Configurateur
@@ -38,8 +38,8 @@ const currentPath = Astro.url.pathname;
           href="/gallery"
           class={`px-4 py-2 rounded-xl transition-all ${
             currentPath === '/gallery' 
-              ? 'bg-green-700 text-white' 
-              : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+              ? 'bg-[#2C7319] text-white' 
+              : 'text-gray-700 hover:bg-green-50 hover:text-[#2C7319]'
           }`}
         >
           Ma Galerie
@@ -48,8 +48,8 @@ const currentPath = Astro.url.pathname;
           href="/cart"
           class={`relative px-4 py-2 rounded-xl transition-all ${
             currentPath === '/cart' 
-              ? 'bg-green-700 text-white' 
-              : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+              ? 'bg-[#2C7319] text-white' 
+              : 'text-gray-700 hover:bg-green-50 hover:text-[#2C7319]'
           }`}
         >
           🛒 Panier
@@ -64,8 +64,8 @@ const currentPath = Astro.url.pathname;
           href="/auth"
           class={`px-4 py-2 rounded-xl transition-all ${
             currentPath === '/auth' 
-              ? 'bg-green-700 text-white' 
-              : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
+              ? 'bg-[#2C7319] text-white' 
+              : 'text-gray-700 hover:bg-green-50 hover:text-[#2C7319]'
           }`}
         >
           Mon Compte
@@ -73,7 +73,7 @@ const currentPath = Astro.url.pathname;
       </nav>
 
       <!-- Mobile Menu Button -->
-      <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-700 hover:text-green-700">
+      <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-700 hover:text-[#2C7319]">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
@@ -84,19 +84,19 @@ const currentPath = Astro.url.pathname;
   <!-- Mobile Menu -->
   <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 bg-white">
     <nav class="px-6 py-4 space-y-2">
-      <a href="/" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700">
+      <a href="/" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
         Accueil
       </a>
-      <a href="/configurator" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700">
+      <a href="/configurator" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
         Configurateur
       </a>
-      <a href="/gallery" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700">
+      <a href="/gallery" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
         Ma Galerie
       </a>
-      <a href="/cart" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700">
+      <a href="/cart" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
         🛒 Panier
       </a>
-      <a href="/auth" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700">
+      <a href="/auth" class="block px-4 py-2 rounded-xl text-gray-700 hover:bg-green-50 hover:text-[#2C7319]">
         Mon Compte
       </a>
     </nav>

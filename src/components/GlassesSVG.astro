@@ -1,3 +1,7 @@
+---
+// SVG des lunettes - Simple preview
+---
+
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595.28 300" class="w-full max-w-md mx-auto" id="glasses-svg">
   <defs>
     <style>
@@ -30,11 +34,12 @@
 </svg>
 
 <script>
+  // Listen for color changes
   if (typeof window !== 'undefined') {
     const updateColors = () => {
-      const frameColor = document.getElementById('frame-color')?.value || '#2C7319';
-      const templeColor = document.getElementById('temple-color')?.value || '#1a4d0f';
-      const lensColor = document.getElementById('lens-color')?.value || '#87CEEB';
+      const frameColor = (document.getElementById('frame-color') as HTMLInputElement)?.value || '#2C7319';
+      const templeColor = (document.getElementById('temple-color') as HTMLInputElement)?.value || '#1a4d0f';
+      const lensColor = (document.getElementById('lens-color') as HTMLInputElement)?.value || '#87CEEB';
       
       document.documentElement.style.setProperty('--frame-color', frameColor);
       document.documentElement.style.setProperty('--temple-color', templeColor);

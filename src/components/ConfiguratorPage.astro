@@ -1,6 +1,8 @@
 ---
+// ConfiguratorPage - Interface de configuration (données PocketBase)
 import GlassesSVG from './GlassesSVG.astro';
 ---
+
 <div class="min-h-screen bg-gradient-to-b from-white to-green-50/30 py-12">
   <div class="max-w-7xl mx-auto px-6">
     <!-- Header -->
@@ -28,7 +30,7 @@ import GlassesSVG from './GlassesSVG.astro';
         ))}
       </div>
       <div class="w-full bg-gray-200 rounded-full h-2">
-        <div id="progress-bar" class="bg-green-700 h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+        <div id="progress-bar" class="bg-[#2C7319] h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
       </div>
     </div>
 
@@ -49,7 +51,7 @@ import GlassesSVG from './GlassesSVG.astro';
                   { id: 'titanium', name: 'Titane', desc: 'Premium et résistant' },
                   { id: 'wood', name: 'Bois', desc: 'Naturel et unique' }
                 ].map((material) => (
-                  <label class="material-option border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-green-700 transition-all">
+                  <label class="material-option border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-[#2C7319] transition-all">
                     <input type="radio" name="frameMaterial" value={material.id} class="hidden material-radio" />
                     <div class="text-sm text-gray-900 mb-1">{material.name}</div>
                     <div class="text-xs text-gray-600">{material.desc}</div>
@@ -102,9 +104,9 @@ import GlassesSVG from './GlassesSVG.astro';
           <div class="step-content hidden" data-step="4">
             <h2 class="text-2xl text-gray-900 mb-6">IA Créative (optionnel)</h2>
             
-            <div class="bg-green-50 border border-green-700 rounded-xl p-4 mb-6">
+            <div class="bg-green-50 border border-[#2C7319] rounded-xl p-4 mb-6">
               <div class="flex items-start gap-3">
-                <svg class="w-5 h-5 text-green-700 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-[#2C7319] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
                 </svg>
                 <p class="text-sm text-gray-700">Décrivez le style que vous recherchez et notre IA vous proposera des ajustements</p>
@@ -112,7 +114,7 @@ import GlassesSVG from './GlassesSVG.astro';
             </div>
             
             <textarea 
-              class="w-full h-32 border border-gray-300 rounded-xl p-4 text-sm resize-none focus:ring-2 focus:ring-green-700 focus:outline-none"
+              class="w-full h-32 border border-gray-300 rounded-xl p-4 text-sm resize-none focus:ring-2 focus:ring-[#2C7319] focus:outline-none"
               placeholder="Ex: Je veux des lunettes élégantes et modernes pour un usage quotidien..."
             ></textarea>
           </div>
@@ -123,7 +125,7 @@ import GlassesSVG from './GlassesSVG.astro';
             
             <div class="bg-green-50 rounded-xl p-6 mb-6">
               <div class="flex items-center gap-3 mb-4">
-                <svg class="w-6 h-6 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 text-[#2C7319]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <h3 class="text-lg text-gray-900">Configuration terminée</h3>
@@ -134,14 +136,14 @@ import GlassesSVG from './GlassesSVG.astro';
             </div>
 
             <div class="space-y-3">
-              <button class="w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <button class="w-full bg-[#2C7319] hover:bg-[#3a9122] text-white py-4 rounded-xl transition-all flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
                 </svg>
                 Sauvegarder dans ma galerie
               </button>
               
-              <button class="w-full bg-white border-2 border-green-700 text-green-700 hover:bg-green-50 py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <button class="w-full bg-white border-2 border-[#2C7319] text-[#2C7319] hover:bg-green-50 py-4 rounded-xl transition-all flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
@@ -160,7 +162,7 @@ import GlassesSVG from './GlassesSVG.astro';
             Précédent
           </button>
           
-          <button id="next-btn" class="px-6 py-3 bg-green-700 text-white rounded-xl hover:bg-green-800 transition-all">
+          <button id="next-btn" class="px-6 py-3 bg-[#2C7319] text-white rounded-xl hover:bg-[#3a9122] transition-all">
             Suivant
             <svg class="w-5 h-5 inline ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -190,7 +192,7 @@ import GlassesSVG from './GlassesSVG.astro';
 
         <div class="mt-6 bg-green-50 rounded-xl p-4">
           <div class="flex items-start gap-3">
-            <svg class="w-5 h-5 text-green-700 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-[#2C7319] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
             </svg>
             <div>
@@ -210,26 +212,30 @@ import GlassesSVG from './GlassesSVG.astro';
   let zoomLevel = 1;
 
   function updateUI() {
+    // Update progress bar
     const progress = (currentStep / totalSteps) * 100;
     const progressBar = document.getElementById('progress-bar');
     if (progressBar) progressBar.style.width = progress + '%';
 
+    // Update step indicators
     document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
       const circle = indicator.querySelector('.step-circle');
       if (index + 1 <= currentStep) {
-        circle?.classList.add('bg-green-700', 'text-white');
+        circle?.classList.add('bg-[#2C7319]', 'text-white');
         circle?.classList.remove('bg-gray-200', 'text-gray-600');
       } else {
-        circle?.classList.remove('bg-green-700', 'text-white');
+        circle?.classList.remove('bg-[#2C7319]', 'text-white');
         circle?.classList.add('bg-gray-200', 'text-gray-600');
       }
     });
 
+    // Show/hide step content
     document.querySelectorAll('.step-content').forEach((content) => {
       const step = parseInt(content.getAttribute('data-step') || '0');
       content.classList.toggle('hidden', step !== currentStep);
     });
 
+    // Update navigation buttons
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
     if (prevBtn) prevBtn.disabled = currentStep === 1;
@@ -238,6 +244,7 @@ import GlassesSVG from './GlassesSVG.astro';
     }
   }
 
+  // Navigation
   document.getElementById('prev-btn')?.addEventListener('click', () => {
     if (currentStep > 1) {
       currentStep--;
@@ -252,28 +259,31 @@ import GlassesSVG from './GlassesSVG.astro';
     }
   });
 
+  // Material selection
   document.querySelectorAll('.material-radio').forEach((radio) => {
     radio.addEventListener('change', (e) => {
       document.querySelectorAll('.material-option').forEach(opt => {
-        opt.classList.remove('border-green-700', 'bg-green-50');
+        opt.classList.remove('border-[#2C7319]', 'bg-green-50');
       });
-      const target = e.target;
-      target.closest('.material-option')?.classList.add('border-green-700', 'bg-green-50');
+      const target = e.target as HTMLInputElement;
+      target.closest('.material-option')?.classList.add('border-[#2C7319]', 'bg-green-50');
     });
   });
 
+  // Dimension sliders
   document.querySelectorAll('.dimension-slider').forEach((slider) => {
     slider.addEventListener('input', (e) => {
-      const target = e.target;
+      const target = e.target as HTMLInputElement;
       const targetId = target.getAttribute('data-target');
       const valueEl = document.getElementById(targetId || '');
       if (valueEl) valueEl.textContent = target.value;
     });
   });
 
+  // Zoom controls
   document.querySelectorAll('.zoom-btn').forEach((btn) => {
     btn.addEventListener('click', (e) => {
-      const target = e.currentTarget;
+      const target = e.currentTarget as HTMLElement;
       const action = target.getAttribute('data-zoom');
       const preview = document.getElementById('glasses-preview');
       const display = document.getElementById('zoom-display');
@@ -287,5 +297,6 @@ import GlassesSVG from './GlassesSVG.astro';
     });
   });
 
+  // Initialize
   updateUI();
 </script>
