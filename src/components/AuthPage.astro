@@ -3,7 +3,7 @@ import pb from "../utils/pb";
 
 // Vérifier si l'utilisateur est déjà connecté
 if (pb.authStore.isValid) {
-  return Astro.redirect("/dashboard");
+  return Astro.redirect("/");
 }
 ---
 
@@ -296,7 +296,7 @@ if (pb.authStore.isValid) {
       errorDiv.classList.add("hidden");
 
       await pb.collection("users").authWithPassword(email, password);
-      window.location.href = "/dashboard";
+      window.location.href = "/";
     } catch (error: any) {
       errorDiv.textContent = error.message || "Erreur de connexion";
       errorDiv.classList.remove("hidden");
@@ -332,7 +332,7 @@ if (pb.authStore.isValid) {
       await pb.collection("users").create(userData);
       
       await pb.collection("users").authWithPassword(email, password);
-      window.location.href = "/dashboard";
+      window.location.href = "/";
     } catch (error: any) {
       errorDiv.textContent = error.message || "Erreur lors de l'inscription";
       errorDiv.classList.remove("hidden");

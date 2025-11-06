@@ -9,9 +9,7 @@ import Layout from "../layouts/Layout.astro";
         IA CRÉATIVE
       </h1>
 
-      <!-- Grille 3 colonnes : Prompt | Preview | Code -->
-      <div class="grid md:grid-cols-3 gap-6 mb-6">
-        <!-- Colonne 1 : Formulaire IA -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
         <div
           class="bg-white rounded-3xl p-6 shadow-xl flex flex-col justify-between"
         >
@@ -32,7 +30,6 @@ import Layout from "../layouts/Layout.astro";
               placeholder="Ex : Je souhaite des lunettes élégantes avec une touche rétro…"
             ></textarea>
 
-            <!-- Info IA -->
             <div
               class="bg-blue-50 border border-blue-300 rounded-xl p-4 mt-4 text-sm"
             >
@@ -63,7 +60,6 @@ import Layout from "../layouts/Layout.astro";
           </div>
         </div>
 
-        <!-- Colonne 2 : Aperçu SVG -->
         <div class="bg-gray-50 rounded-3xl p-6 shadow-xl flex flex-col">
           <h2 class="text-xl text-gray-900 mb-4">Aperçu</h2>
 
@@ -75,23 +71,8 @@ import Layout from "../layouts/Layout.astro";
             <span class="opacity-70">L'aperçu généré s'affichera ici…</span>
           </div>
         </div>
-
-        <!-- Colonne 3 : Code SVG -->
-        <div class="bg-gray-900 rounded-3xl p-6 shadow-xl flex flex-col">
-          <h2 class="text-xl text-white mb-4">Code SVG</h2>
-          <div
-            class="bg-gray-950 rounded-xl p-4 flex-1 overflow-auto"
-            style="min-height: 300px;"
-          >
-            <code
-              id="svg-output"
-              class="text-green-400 font-mono text-xs block whitespace-pre"
-            ></code>
-          </div>
-        </div>
       </div>
 
-      <!-- Barre d'actions -->
       <div class="bg-white rounded-3xl p-6 shadow-xl">
         <div class="flex flex-wrap gap-3 items-center justify-center">
           <a
@@ -109,7 +90,6 @@ import Layout from "../layouts/Layout.astro";
           </button>
         </div>
 
-        <!-- Message de statut -->
         <div
           id="status-message"
           class="mt-4 p-3 bg-gray-100 border-l-4 border-gray-400 text-sm text-gray-700 rounded"
@@ -121,7 +101,6 @@ import Layout from "../layouts/Layout.astro";
   </main>
 
   <script>
-    //@ts-nocheck
 
     async function generateSVG(prompt) {
       console.log("Generating SVG for prompt:", prompt);
@@ -133,21 +112,17 @@ import Layout from "../layouts/Layout.astro";
           body: JSON.stringify({ prompt }),
         });
 
-        // Vérifie le statut HTTP
         if (!res.ok) {
           throw new Error(`Erreur API: ${res.status} ${res.statusText}`);
         }
 
-        // Récupère le texte brut d'abord
         const text = await res.text();
         console.log("Raw response:", text);
 
-        // Vérifie que la réponse n'est pas vide
         if (!text || text.trim() === "") {
           throw new Error("Réponse vide de l'API");
         }
 
-        // Parse le JSON
         const data = JSON.parse(text);
 
         if (!data.svg) {
@@ -174,11 +149,9 @@ import Layout from "../layouts/Layout.astro";
       console.log("submitted: ", prompt);
 
       const svgContainer = document.getElementById("svg-container");
-      const svgOutput = document.getElementById("svg-output");
       const generateButton = document.getElementById("generate-button");
       const statusMessage = document.getElementById("status-message");
 
-      // État de chargement
       generateButton.disabled = true;
       svgContainer.innerHTML =
         '<span class="text-gray-400">Génération en cours...</span>';
@@ -190,7 +163,6 @@ import Layout from "../layouts/Layout.astro";
         const svgCode = await generateSVG(prompt);
         console.log("svgCode: ", svgCode);
 
-        svgOutput.textContent = svgCode;
         svgContainer.innerHTML = svgCode;
 
         statusMessage.className =
