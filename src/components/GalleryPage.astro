@@ -1,11 +1,39 @@
 ---
-// GalleryPage - Interface de galerie (données PocketBase)
 import GlassesSVG from './GlassesSVG.astro';
+import pb from '../utils/pb';
+
+let allModels = [];
+
+try {
+  const records = await pb.collection('lunettes').getFullList({
+    expand: 'matiere_montures,matiere_branches',
+  });
+  
+  allModels = records.map(record => ({
+    id: record.id,
+    frameMaterial: record.expand?.matiere_montures?.matiere_montures || 'N/A',
+    branchesMaterial: record.expand?.matiere_branches?.matiere_branches || 'N/A',
+    bridgeWidth: record.lar_pont || 18,
+    lensWidth: record.lar_verres || 50,
+    frameColor: record.montures_couleur || '#2C7319',
+    templeColor: record.branches_couleur || '#1a4d0f',
+    lensColor: record.verres_couleur || '#87CEEB',
+    svgCode: record.code_svg || '',
+    createdDate: new Date(record.created).toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }),
+  }));
+} catch (error) {
+  console.error('Erreur lors du chargement des modèles:', error);
+}
+
+const hasModels = allModels.length > 0;
 ---
 
 <div class="min-h-screen bg-gradient-to-b from-white to-green-50/30 py-12">
   <div class="max-w-7xl mx-auto px-6">
-    <!-- Header -->
     <div class="flex items-center justify-between mb-8">
       <div>
         <h1 class="text-4xl text-gray-900 mb-2">MA GALERIE</h1>
@@ -22,88 +50,94 @@ import GlassesSVG from './GlassesSVG.astro';
       </a>
     </div>
 
-    <!-- Models Grid - Empty State -->
-    <div id="empty-state" class="text-center py-20">
-      <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-        </svg>
-      </div>
-      <h2 class="text-2xl text-gray-900 mb-4">Aucun modèle créé</h2>
-      <p class="text-gray-600 mb-8">Commencez par créer votre première paire de lunettes personnalisées</p>
-      <a
-        href="/"
-        class="inline-flex items-center bg-[#2C7319] hover:bg-[#3a9122] text-white px-6 py-3 rounded-xl transition-all"
-      >
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-        </svg>
-        CRÉER MON PREMIER MODÈLE
-      </a>
-    </div>
-
-    <!-- Models Grid - With Data (hidden by default, will be populated from PocketBase) -->
-    <div id="models-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-      <!-- Example Model Card (template for PocketBase data) -->
-      <div class="model-card bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all">
-        <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-          <GlassesSVG />
+    {!hasModels && (
+      <div id="empty-state" class="text-center py-20">
+        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg>
         </div>
-        
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <p class="text-sm text-gray-600">Matériaux</p>
-              <p class="model-material">Acétate</p>
-            </div>
-            <div class="text-right">
-              <p class="text-sm text-gray-600">Dimensions</p>
-              <p class="model-dimensions">50mm × 18mm</p>
-            </div>
-          </div>
-
-          <div class="flex gap-2 mb-4">
-            <div class="flex-1">
-              <p class="text-xs text-gray-600 mb-1">Monture</p>
-              <div class="h-8 rounded-lg model-frame-color" style="background-color: #2C7319;"></div>
-            </div>
-            <div class="flex-1">
-              <p class="text-xs text-gray-600 mb-1">Branches</p>
-              <div class="h-8 rounded-lg model-temple-color" style="background-color: #1a4d0f;"></div>
-            </div>
-            <div class="flex-1">
-              <p class="text-xs text-gray-600 mb-1">Verres</p>
-              <div class="h-8 rounded-lg model-lens-color" style="background-color: #87CEEB;"></div>
-            </div>
-          </div>
-
-          <p class="text-xs text-gray-500 mb-4 model-date">Créé le 4 nov. 2025</p>
-
-          <div class="grid grid-cols-2 gap-2">
-            <button class="btn-add-cart flex items-center justify-center gap-2 bg-[#2C7319] text-white py-3 rounded-xl hover:bg-[#3a9122] transition-all">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-              </svg>
-              Panier
-            </button>
-            <button class="btn-delete flex items-center justify-center gap-2 border-2 border-red-200 text-red-600 py-3 rounded-xl hover:bg-red-50 transition-all">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-              </svg>
-              Supprimer
-            </button>
-          </div>
-        </div>
+        <h2 class="text-2xl text-gray-900 mb-4">Aucun modèle créé</h2>
+        <p class="text-gray-600 mb-8">Commencez par créer votre première paire de lunettes personnalisées</p>
+        <a
+          href="/"
+          class="inline-flex items-center bg-[#2C7319] hover:bg-[#3a9122] text-white px-6 py-3 rounded-xl transition-all"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          CRÉER MON PREMIER MODÈLE
+        </a>
       </div>
-    </div>
+    )}
+
+    {hasModels && (
+      <div id="models-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {allModels.map((model) => (
+          <div class="model-card bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all" data-model-id={model.id}>
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-8 h-48 flex items-center justify-center">
+              {model.svgCode ? (
+                <div set:html={model.svgCode} class="w-full h-full flex items-center justify-center"></div>
+              ) : (
+                <GlassesSVG />
+              )}
+            </div>
+            
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <p class="text-sm text-gray-600">Matériaux</p>
+                  <p class="model-material text-gray-900">{model.frameMaterial}</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm text-gray-600">Dimensions</p>
+                  <p class="model-dimensions text-gray-900">{model.lensWidth}mm × {model.bridgeWidth}mm</p>
+                </div>
+              </div>
+
+              <div class="flex gap-2 mb-4">
+                <div class="flex-1">
+                  <p class="text-xs text-gray-600 mb-1">Monture</p>
+                  <div class="h-8 rounded-lg model-frame-color" style={`background-color: ${model.frameColor};`}></div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-xs text-gray-600 mb-1">Branches</p>
+                  <div class="h-8 rounded-lg model-temple-color" style={`background-color: ${model.templeColor};`}></div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-xs text-gray-600 mb-1">Verres</p>
+                  <div class="h-8 rounded-lg model-lens-color" style={`background-color: ${model.lensColor};`}></div>
+                </div>
+              </div>
+
+              <p class="text-xs text-gray-500 mb-4 model-date">Créé le {model.createdDate}</p>
+
+              <div class="grid grid-cols-2 gap-2">
+                <button class="btn-add-cart flex items-center justify-center gap-2 bg-[#2C7319] text-white py-3 rounded-xl hover:bg-[#3a9122] transition-all">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                  </svg>
+                  Panier
+                </button>
+                <button class="btn-delete flex items-center justify-center gap-2 border-2 border-red-200 text-red-600 py-3 rounded-xl hover:bg-red-50 transition-all">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
   </div>
 </div>
 
 <script>
-  // Example: Show grid when models are loaded from PocketBase
-  // This is just a placeholder for integration
-  
+  import pb from '../utils/pb';
+
   document.querySelectorAll('.btn-add-cart').forEach(btn => {
     btn.addEventListener('click', () => {
       alert('Modèle ajouté au panier (à connecter avec PocketBase)');
@@ -111,19 +145,24 @@ import GlassesSVG from './GlassesSVG.astro';
   });
 
   document.querySelectorAll('.btn-delete').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
+      const modelCard = btn.closest('.model-card');
+      const modelId = modelCard.getAttribute('data-model-id');
+      
       if (confirm('Êtes-vous sûr de vouloir supprimer ce modèle ?')) {
-        alert('Modèle supprimé (à connecter avec PocketBase)');
+        try {
+          await pb.collection('lunettes').delete(modelId);
+          modelCard.remove();
+          
+          const remainingCards = document.querySelectorAll('.model-card').length;
+          if (remainingCards === 0) {
+            location.reload();
+          }
+        } catch (error) {
+          console.error('Erreur lors de la suppression:', error);
+          alert('Erreur lors de la suppression du modèle');
+        }
       }
     });
   });
-
-  // TODO: Replace with PocketBase data loading
-  // Example:
-  // const models = await pb.collection('glasses_models').getList();
-  // if (models.items.length > 0) {
-  //   document.getElementById('empty-state')?.classList.add('hidden');
-  //   document.getElementById('models-grid')?.classList.remove('hidden');
-  //   // Populate grid with models
-  // }
 </script>

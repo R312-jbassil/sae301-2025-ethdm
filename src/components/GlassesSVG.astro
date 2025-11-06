@@ -10,8 +10,6 @@
 >
   <defs>
     <style>
-      /* Couleurs contrôlées par variables CSS (définies sur conteneur parent) */
-      /* Branches : remplissage et contour prennent la même couleur branches */
       #branches .cls-1,
       #branches .cls-4 {
         fill: var(--branches-color, #1a4d0f) !important;
@@ -24,7 +22,6 @@
         isolation: isolate;
       }
 
-      /* Monture : remplissage et contour prennent la variable monture */
       #monture .cls-3,
       #monture .cls-4 {
         fill: var(--monture-fill, #ffffff);
@@ -35,7 +32,6 @@
         stroke-width: 0.5px;
       }
 
-      /* Verres : couleur et opacité contrôlées */
       .cls-5 {
         fill: var(--verres-color, #87CEEB);
         opacity: 0.75;

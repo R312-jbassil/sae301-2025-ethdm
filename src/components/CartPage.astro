@@ -1,20 +1,16 @@
 ---
-// CartPage - Interface panier (données PocketBase)
 import GlassesSVG from './GlassesSVG.astro';
 ---
 
 <div class="min-h-screen bg-gradient-to-b from-white to-green-50/30 py-12">
   <div class="max-w-7xl mx-auto px-6">
-    <!-- Header -->
     <div class="mb-8">
       <h1 class="text-4xl text-gray-900 mb-2">MON PANIER</h1>
       <p class="text-gray-600">Finalisez votre commande</p>
     </div>
 
     <div class="grid lg:grid-cols-3 gap-8">
-      <!-- Cart Items -->
       <div class="lg:col-span-2 space-y-6">
-        <!-- Empty State -->
         <div id="empty-cart" class="text-center py-20 bg-white rounded-3xl shadow-xl">
           <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,9 +30,7 @@ import GlassesSVG from './GlassesSVG.astro';
           </a>
         </div>
 
-        <!-- Cart Items (hidden by default, populated from PocketBase) -->
         <div id="cart-items" class="space-y-4 hidden">
-          <!-- Example Cart Item -->
           <div class="cart-item bg-white rounded-2xl p-6 shadow-lg">
             <div class="flex gap-6">
               <div class="w-48 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 flex items-center justify-center">
@@ -79,7 +73,6 @@ import GlassesSVG from './GlassesSVG.astro';
         </div>
       </div>
 
-      <!-- Order Summary -->
       <div class="lg:col-span-1">
         <div class="bg-white rounded-3xl p-8 shadow-xl sticky top-24">
           <h2 class="text-2xl text-gray-900 mb-6">RÉCAPITULATIF</h2>
@@ -142,7 +135,6 @@ import GlassesSVG from './GlassesSVG.astro';
 </div>
 
 <script>
-  // Cart management (to be connected with PocketBase)
   let cartItems: any[] = [];
 
   function updateCart() {
@@ -168,7 +160,6 @@ import GlassesSVG from './GlassesSVG.astro';
     }
   }
 
-  // Remove item handlers
   document.querySelectorAll('.btn-remove-item').forEach(btn => {
     btn.addEventListener('click', () => {
       if (confirm('Retirer cet article du panier ?')) {
@@ -177,16 +168,9 @@ import GlassesSVG from './GlassesSVG.astro';
     });
   });
 
-  // Checkout
   document.getElementById('checkout-btn')?.addEventListener('click', () => {
     alert('Redirection vers le paiement (à connecter avec PocketBase)');
   });
 
-  // Initialize
   updateCart();
-
-  // TODO: Load cart from PocketBase
-  // const cart = await pb.collection('cart').getList();
-  // cartItems = cart.items;
-  // updateCart();
 </script>

@@ -1,5 +1,8 @@
 ---
 import "../styles/globals.css";
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
 interface Props {
   title?: string;
 }
@@ -22,6 +25,8 @@ const { title = 'TaVue - Configurateur de lunettes personnalisées' } = Astro.pr
     />
   </head>
   <body>
+    <Header />
     <slot />
+    <Footer />
   </body>
 </html>

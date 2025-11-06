@@ -1,0 +1,216 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Générateur IA de Style">
+  <main class="min-h-screen bg-gradient-to-b from-white to-green-50/30 py-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <h1 class="text-center text-3xl font-bold mb-8 text-gray-900">
+        IA CRÉATIVE
+      </h1>
+
+      <!-- Grille 3 colonnes : Prompt | Preview | Code -->
+      <div class="grid md:grid-cols-3 gap-6 mb-6">
+        <!-- Colonne 1 : Formulaire IA -->
+        <div
+          class="bg-white rounded-3xl p-6 shadow-xl flex flex-col justify-between"
+        >
+          <div>
+            <h2 class="text-xl text-gray-900 mb-3">Style & Prompt</h2>
+            <p class="text-sm text-gray-700 mb-2">
+              Laissez l'IA créer selon vos préférences stylistiques.
+            </p>
+            <label class="block mt-3 text-sm font-semibold text-gray-700 mb-1">
+              Décrivez votre style idéal
+            </label>
+            <p class="text-xs text-gray-500 mb-3">
+              Exemple : "style vintage des années 70", "design sportif moderne"…
+            </p>
+            <textarea
+              id="user-prompt"
+              class="w-full min-h-[120px] border border-gray-300 rounded-xl p-4 text-sm resize-none focus:ring-2 focus:ring-[#2C7319] focus:outline-none font-mono"
+              placeholder="Ex : Je souhaite des lunettes élégantes avec une touche rétro…"
+            ></textarea>
+
+            <!-- Info IA -->
+            <div
+              class="bg-blue-50 border border-blue-300 rounded-xl p-4 mt-4 text-sm"
+            >
+              <div
+                class="flex gap-2 items-center text-blue-700 font-semibold mb-2"
+              >
+                <svg
+                  class="w-5 h-5 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m0-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+                  ></path>
+                </svg>
+                L'IA peut ajuster :
+              </div>
+              <ul class="pl-3 text-blue-700 list-disc text-xs space-y-1">
+                <li>Proportions et équilibre visuel</li>
+                <li>Harmonies de couleurs</li>
+                <li>Style général (vintage, moderne…)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne 2 : Aperçu SVG -->
+        <div class="bg-gray-50 rounded-3xl p-6 shadow-xl flex flex-col">
+          <h2 class="text-xl text-gray-900 mb-4">Aperçu</h2>
+
+          <div
+            id="svg-container"
+            class="bg-white rounded-xl border border-gray-200 w-full flex-1 flex items-center justify-center text-center text-gray-400 italic overflow-auto"
+            style="min-height: 300px;"
+          >
+            <span class="opacity-70">L'aperçu généré s'affichera ici…</span>
+          </div>
+        </div>
+
+        <!-- Colonne 3 : Code SVG -->
+        <div class="bg-gray-900 rounded-3xl p-6 shadow-xl flex flex-col">
+          <h2 class="text-xl text-white mb-4">Code SVG</h2>
+          <div
+            class="bg-gray-950 rounded-xl p-4 flex-1 overflow-auto"
+            style="min-height: 300px;"
+          >
+            <code
+              id="svg-output"
+              class="text-green-400 font-mono text-xs block whitespace-pre"
+            ></code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barre d'actions -->
+      <div class="bg-white rounded-3xl p-6 shadow-xl">
+        <div class="flex flex-wrap gap-3 items-center justify-center">
+          <a
+            href="/"
+            class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all font-semibold"
+          >
+            ← Accueil
+          </a>
+
+          <button
+            id="generate-button"
+            class="px-8 py-3 bg-[#2C7319] text-white rounded-xl hover:bg-[#3a9122] transition-all font-semibold shadow-lg"
+          >
+            Générer
+          </button>
+        </div>
+
+        <!-- Message de statut -->
+        <div
+          id="status-message"
+          class="mt-4 p-3 bg-gray-100 border-l-4 border-gray-400 text-sm text-gray-700 rounded"
+        >
+          Prêt à générer votre création…
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    //@ts-nocheck
+
+    async function generateSVG(prompt) {
+      console.log("Generating SVG for prompt:", prompt);
+
+      try {
+        const res = await fetch("/api/generate-svg", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt }),
+        });
+
+        // Vérifie le statut HTTP
+        if (!res.ok) {
+          throw new Error(`Erreur API: ${res.status} ${res.statusText}`);
+        }
+
+        // Récupère le texte brut d'abord
+        const text = await res.text();
+        console.log("Raw response:", text);
+
+        // Vérifie que la réponse n'est pas vide
+        if (!text || text.trim() === "") {
+          throw new Error("Réponse vide de l'API");
+        }
+
+        // Parse le JSON
+        const data = JSON.parse(text);
+
+        if (!data.svg) {
+          throw new Error('Le champ "svg" est absent de la réponse');
+        }
+
+        return data.svg;
+      } catch (error) {
+        console.error("Erreur dans generateSVG:", error);
+        throw error;
+      }
+    }
+
+    async function handleSubmit() {
+      let prompt = "";
+      const promptElement = document.getElementById("user-prompt");
+      prompt = promptElement ? promptElement.value : "";
+
+      if (!prompt.trim()) {
+        alert("Veuillez entrer un prompt");
+        return;
+      }
+
+      console.log("submitted: ", prompt);
+
+      const svgContainer = document.getElementById("svg-container");
+      const svgOutput = document.getElementById("svg-output");
+      const generateButton = document.getElementById("generate-button");
+      const statusMessage = document.getElementById("status-message");
+
+      // État de chargement
+      generateButton.disabled = true;
+      svgContainer.innerHTML =
+        '<span class="text-gray-400">Génération en cours...</span>';
+      statusMessage.className =
+        "mt-4 p-3 bg-blue-100 border-l-4 border-blue-500 text-sm text-blue-800 rounded";
+      statusMessage.textContent = "Génération en cours...";
+
+      try {
+        const svgCode = await generateSVG(prompt);
+        console.log("svgCode: ", svgCode);
+
+        svgOutput.textContent = svgCode;
+        svgContainer.innerHTML = svgCode;
+
+        statusMessage.className =
+          "mt-4 p-3 bg-green-100 border-l-4 border-green-500 text-sm text-green-800 rounded";
+        statusMessage.textContent = "SVG généré avec succès !";
+      } catch (error) {
+        console.error("Erreur:", error);
+        svgContainer.innerHTML = `<span class="text-red-600">Erreur: ${error.message}</span>`;
+
+        statusMessage.className =
+          "mt-4 p-3 bg-red-100 border-l-4 border-red-500 text-sm text-red-800 rounded";
+        statusMessage.textContent = `Erreur: ${error.message}`;
+      } finally {
+        generateButton.disabled = false;
+      }
+    }
+
+    const generateButton = document.getElementById("generate-button");
+    if (generateButton) {
+      generateButton.addEventListener("click", handleSubmit);
+    }
+  </script>
+</Layout>

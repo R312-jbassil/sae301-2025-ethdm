@@ -1,10 +1,11 @@
 ---
 import GlassesSVG from "./GlassesSVG.astro";
+import "../utils/pb"
+import pb from "../utils/pb";
 ---
 
 <div class="min-h-screen bg-gradient-to-b from-white to-green-50/30 py-12">
   <div class="max-w-7xl mx-auto px-6">
-    <!-- Header -->
     <div class="text-center mb-12">
       <h1 class="text-4xl text-gray-900 mb-4">CONFIGURATEUR DE LUNETTES</h1>
       <p class="text-gray-600">
@@ -12,7 +13,6 @@ import GlassesSVG from "./GlassesSVG.astro";
       </p>
     </div>
 
-    <!-- Progress Bar -->
     <div class="mb-12">
       <div class="flex justify-between mb-4" id="progress-steps">
         {
@@ -20,8 +20,7 @@ import GlassesSVG from "./GlassesSVG.astro";
             { id: 1, title: "Matériaux" },
             { id: 2, title: "Dimensions" },
             { id: 3, title: "Couleurs" },
-            { id: 4, title: "IA Créative" },
-            { id: 5, title: "Aperçu final" },
+            { id: 4, title: "Aperçu final" },
           ].map((step) => (
             <div
               class="flex flex-col items-center step-indicator"
@@ -46,10 +45,8 @@ import GlassesSVG from "./GlassesSVG.astro";
     </div>
 
     <div class="grid lg:grid-cols-2 gap-8">
-      <!-- Configuration Panel -->
       <div class="bg-white rounded-3xl p-8 shadow-xl">
         <div id="config-content">
-          <!-- Step 1: Matériaux -->
           <div class="step-content" data-step="1">
             <h2 class="text-2xl text-gray-900 mb-6">
               Choisissez vos matériaux
@@ -61,7 +58,7 @@ import GlassesSVG from "./GlassesSVG.astro";
               >
               <div class="grid grid-cols-2 gap-4">
                 {
-                  [
+                    [
                     {
                       id: "acetate",
                       name: "Acétate",
@@ -70,7 +67,7 @@ import GlassesSVG from "./GlassesSVG.astro";
                     { id: "metal", name: "Métal", desc: "Élégant et durable" },
                     {
                       id: "titanium",
-                      name: "Titane",
+                      name: "Titane", 
                       desc: "Premium et résistant",
                     },
                     { id: "wood", name: "Bois", desc: "Naturel et unique" },
@@ -79,8 +76,9 @@ import GlassesSVG from "./GlassesSVG.astro";
                       <input
                         type="radio"
                         name="frameMaterial"
-                        value={material.id}
+                        value={material.name}
                         class="hidden material-radio"
+                        data-material-type="frame"
                       />
                       <div class="text-sm text-gray-900 mb-1">
                         {material.name}
@@ -91,6 +89,7 @@ import GlassesSVG from "./GlassesSVG.astro";
                 }
               </div>
             </div>
+
             <div class="mb-6">
               <label class="block text-sm text-gray-700 mb-3"
                 >Matériau des branches</label
@@ -115,8 +114,9 @@ import GlassesSVG from "./GlassesSVG.astro";
                       <input
                         type="radio"
                         name="branchesMaterial"
-                        value={material.id}
+                        value={material.name}
                         class="hidden material-radio"
+                        data-material-type="branches"
                       />
                       <div class="text-sm text-gray-900 mb-1">
                         {material.name}
@@ -129,7 +129,6 @@ import GlassesSVG from "./GlassesSVG.astro";
             </div>
           </div>
 
-          <!-- Step 2: Dimensions -->
           <div class="step-content hidden" data-step="2">
             <h2 class="text-2xl text-gray-900 mb-6">Ajustez les dimensions</h2>
 
@@ -145,6 +144,7 @@ import GlassesSVG from "./GlassesSVG.astro";
                   value="18"
                   class="w-full dimension-slider"
                   data-target="bridge-value"
+                  data-dimension-type="bridge"
                 />
               </div>
 
@@ -159,12 +159,12 @@ import GlassesSVG from "./GlassesSVG.astro";
                   value="50"
                   class="w-full dimension-slider"
                   data-target="lens-value"
+                  data-dimension-type="lens"
                 />
               </div>
             </div>
           </div>
 
-          <!-- Step 3: Couleurs -->
           <div class="step-content hidden" data-step="3">
             <h2 class="text-2xl text-gray-900 mb-6">
               Personnalisez les couleurs
@@ -209,10 +209,7 @@ import GlassesSVG from "./GlassesSVG.astro";
             </div>
           </div>
 
-          <!-- Step 4: (Nouvelle page) -->
-
-          <!-- Step 5: Aperçu final -->
-          <div class="step-content hidden" data-step="5">
+          <div class="step-content hidden" data-step="4">
             <h2 class="text-2xl text-gray-900 mb-6">Votre création</h2>
 
             <div class="bg-green-50 rounded-xl p-6 mb-6">
@@ -232,8 +229,7 @@ import GlassesSVG from "./GlassesSVG.astro";
                 <h3 class="text-lg text-gray-900">Configuration terminée</h3>
               </div>
               <p class="text-sm text-gray-600">
-                Vos lunettes sont prêtes ! Vous pouvez les sauvegarder dans
-                votre galerie ou les ajouter au panier.
+                Vos lunettes sont prêtes ! Vous pouvez les exporter ou les télécharger.
               </p>
             </div>
 
@@ -254,7 +250,7 @@ import GlassesSVG from "./GlassesSVG.astro";
                     d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
                   ></path>
                 </svg>
-                Sauvegarder dans ma galerie
+                Télécharger le fichier
               </button>
 
               <button
@@ -270,16 +266,15 @@ import GlassesSVG from "./GlassesSVG.astro";
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                   ></path>
                 </svg>
-                Ajouter au panier
+                Recommencer
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Navigation Buttons -->
         <div class="flex justify-between mt-8 pt-8 border-t border-gray-200">
           <button
             id="prev-btn"
@@ -322,7 +317,6 @@ import GlassesSVG from "./GlassesSVG.astro";
         </div>
       </div>
 
-      <!-- Preview Panel -->
       <div
         class="bg-white rounded-3xl p-8 shadow-xl sticky top-24 h-fit"
         id="glasses-preview"
@@ -395,18 +389,28 @@ import GlassesSVG from "./GlassesSVG.astro";
 </div>
 
 <script>
-  let currentStep = 1;
-  const totalSteps = 5;
-  let zoomLevel = 1;
+  import pb from "../utils/pb";
 
-  // UI update logic
+  let currentStep = 1;
+  const totalSteps = 4;
+  let zoomLevel = 1;
+  let configData = {
+    frameMaterialId: "",
+    branchesMaterialId: "",
+    frameMaterial: "",
+    branchesMaterial: "",
+    bridgeWidth: 18,
+    lensWidth: 50,
+    frameColor: "#2C7319",
+    templeColor: "#1a4d0f",
+    lensColor: "#87CEEB",
+  };
+
   function updateUI() {
-    // Update progress bar
     const progress = (currentStep / totalSteps) * 100;
     const progressBar = document.getElementById("progress-bar");
     if (progressBar) progressBar.style.width = progress + "%";
 
-    // Update step indicators
     document.querySelectorAll(".step-indicator").forEach((indicator, index) => {
       const circle = indicator.querySelector(".step-circle");
       if (index + 1 <= currentStep) {
@@ -418,13 +422,11 @@ import GlassesSVG from "./GlassesSVG.astro";
       }
     });
 
-    // Show/hide step content
     document.querySelectorAll(".step-content").forEach((content) => {
       const step = parseInt(content.getAttribute("data-step") || "0");
       content.classList.toggle("hidden", step !== currentStep);
     });
 
-    // Update navigation buttons
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
     if (prevBtn) prevBtn.disabled = currentStep === 1;
@@ -433,7 +435,150 @@ import GlassesSVG from "./GlassesSVG.astro";
     }
   }
 
-  // Navigation handlers
+  async function findOrCreateMaterial(materialName, collection) {
+    try {
+      const existingRecords = await pb.collection(collection).getList(1, 1, {
+        filter: `matiere_${collection === "mat_montures" ? "montures" : "branches"} = "${materialName}"`,
+      });
+
+      if (existingRecords.items.length > 0) {
+        return existingRecords.items[0].id;
+      }
+
+      const fieldName = collection === "mat_montures" ? "matiere_montures" : "matiere_branches";
+      const newRecord = await pb.collection(collection).create({
+        [fieldName]: materialName,
+      });
+
+      return newRecord.id;
+    } catch (error) {
+      console.error(`Erreur lors de la recherche/création du matériau dans ${collection}:`, error);
+      return null;
+    }
+  }
+
+  async function saveFrameMaterialToPocketBase() {
+    try {
+      const frameMaterial = document.querySelector(
+        'input[name="frameMaterial"]:checked'
+      );
+      
+      if (!frameMaterial) {
+        console.warn("Aucun matériau de monture sélectionné");
+        return;
+      }
+
+      const materialValue = frameMaterial.value;
+      const materialId = await findOrCreateMaterial(materialValue, "mat_montures");
+
+      if (materialId) {
+        configData.frameMaterialId = materialId;
+        configData.frameMaterial = materialValue;
+        console.log("Matériau de monture trouvé/créé avec ID:", materialId);
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement du matériau de monture:", error);
+    }
+  }
+
+  async function savebranchesMaterialToPocketBase() {
+    try {
+      const branchesMaterial = document.querySelector(
+        'input[name="branchesMaterial"]:checked'
+      );
+      
+      if (!branchesMaterial) {
+        console.warn("Aucun matériau de branches sélectionné");
+        return;
+      }
+
+      const materialValue = branchesMaterial.value;
+      const materialId = await findOrCreateMaterial(materialValue, "mat_branches");
+
+      if (materialId) {
+        configData.branchesMaterialId = materialId;
+        configData.branchesMaterial = materialValue;
+        console.log("Matériau de branches trouvé/créé avec ID:", materialId);
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement du matériau de branches:", error);
+    }
+  }
+
+  async function saveDimensionsToPocketBase() {
+    try {
+      const bridgeValue = parseInt(document.getElementById("bridge-value")?.textContent || "18");
+      const lensValue = parseInt(document.getElementById("lens-value")?.textContent || "50");
+
+      if (!bridgeValue || !lensValue) {
+        console.warn("Valeurs de dimensions manquantes");
+        return;
+      }
+
+      const record = await pb.collection("lunettes").create({
+        lar_pont: bridgeValue,
+        lar_verres: lensValue,
+      });
+
+      console.log("Dimensions enregistrées:", record);
+      configData.bridgeWidth = bridgeValue;
+      configData.lensWidth = lensValue;
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement des dimensions:", error);
+    }
+  }
+
+  function getSVGCode() {
+    const svgElement = document.querySelector('#glasses-preview svg') || 
+                       document.querySelector('svg#glasses-svg');
+    
+    if (!svgElement) {
+      console.warn("Élément SVG introuvable");
+      return null;
+    }
+
+    return svgElement.outerHTML;
+  }
+
+  async function saveColorsToPocketBase() {
+    try {
+      const frameColorInput = document.getElementById("frame-color");
+      const templeColorInput = document.getElementById("temple-color");
+      const lensColorInput = document.getElementById("lens-color");
+      
+      if (!frameColorInput || !templeColorInput || !lensColorInput) {
+        console.warn("Inputs couleur introuvables");
+        return;
+      }
+
+      const frameColorValue = frameColorInput.value;
+      const templeColorValue = templeColorInput.value;
+      const lensColorValue = lensColorInput.value;
+      const svgCode = getSVGCode();
+
+      if (!svgCode) {
+        console.warn("Code SVG introuvable");
+        return;
+      }
+
+      const record = await pb.collection("lunettes").create({
+        montures_couleur: frameColorValue,
+        branches_couleur: templeColorValue,
+        verres_couleur: lensColorValue,
+        code_svg: svgCode,
+        matiere_montures: configData.frameMaterialId,
+        matiere_branches: configData.branchesMaterialId,
+      });
+
+      console.log("Couleurs, SVG et relations enregistrés:", record);
+      configData.frameColor = frameColorValue;
+      configData.templeColor = templeColorValue;
+      configData.lensColor = lensColorValue;
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement des couleurs et relations:", error);
+    }
+  }
+
   document.getElementById("prev-btn")?.addEventListener("click", () => {
     if (currentStep > 1) {
       currentStep--;
@@ -441,14 +586,22 @@ import GlassesSVG from "./GlassesSVG.astro";
     }
   });
 
-  document.getElementById("next-btn")?.addEventListener("click", () => {
+  document.getElementById("next-btn")?.addEventListener("click", async () => {
+    if (currentStep === 1) {
+      await saveFrameMaterialToPocketBase();
+      await savebranchesMaterialToPocketBase();
+    } else if (currentStep === 2) {
+      await saveDimensionsToPocketBase();
+    } else if (currentStep === 3) {
+      await saveColorsToPocketBase();
+    }
+
     if (currentStep < totalSteps) {
       currentStep++;
       updateUI();
     }
   });
 
-  // Material selection
   document.querySelectorAll(".material-radio").forEach((radio) => {
     radio.addEventListener("change", (e) => {
       document.querySelectorAll(".material-option").forEach((opt) => {
@@ -458,20 +611,30 @@ import GlassesSVG from "./GlassesSVG.astro";
       target
         .closest(".material-option")
         ?.classList.add("border-[#2C7319]", "bg-green-50");
+
+      if (target.getAttribute("data-material-type") === "frame") {
+        configData.frameMaterial = target.value;
+      } else if (target.getAttribute("data-material-type") === "branches") {
+        configData.branchesMaterial = target.value;
+      }
     });
   });
 
-  // Dimension sliders
   document.querySelectorAll(".dimension-slider").forEach((slider) => {
     slider.addEventListener("input", (e) => {
       const target = e.target;
       const targetId = target.getAttribute("data-target");
       const valueEl = document.getElementById(targetId || "");
       if (valueEl) valueEl.textContent = target.value;
+
+      if (targetId === "bridge-value") {
+        configData.bridgeWidth = parseInt(target.value);
+      } else if (targetId === "lens-value") {
+        configData.lensWidth = parseInt(target.value);
+      }
     });
   });
 
-  // Zoom controls
   document.querySelectorAll(".zoom-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const target = e.currentTarget;
@@ -489,176 +652,30 @@ import GlassesSVG from "./GlassesSVG.astro";
   });
 
   window.addEventListener("DOMContentLoaded", () => {
-    // Le conteneur qui affiche le SVG dans l'aperçu
     const previewContainer = document.getElementById("glasses-preview");
 
-    // Inputs de couleurs
     const inputs = {
       branches: document.getElementById("temple-color"),
       monture: document.getElementById("frame-color"),
       verres: document.getElementById("lens-color"),
     };
 
-    // Ajout d'écouteurs pour chaque input
     Object.entries(inputs).forEach(([part, input]) => {
-      input.addEventListener("input", () => {
-        // Met à jour la variable CSS du conteneur de l'aperçu
-        previewContainer.style.setProperty(`--${part}-color`, input.value);
-      });
-    });
-  });
+      if (input) {
+        input.addEventListener("input", () => {
+          previewContainer.style.setProperty(`--${part}-color`, input.value);
 
-  // Initial UI setup
-  updateUI();
-
-  let promptHistory = [];
-
-  async function fetchGeneratedSVG(prompts) {
-    const response = await fetch("/api/generateSVG", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(prompts),
-    });
-    if (!response.ok) {
-      console.error(
-        "Erreur lors de la génération du SVG :",
-        response.statusText,
-      );
-      return { content: "" };
-    }
-    const data = await response.json();
-    return data.svg ?? data;
-  }
-
-  async function onGenerateClick() {
-    const promptInput = document.getElementById("custom-prompt");
-    const svgDisplay = document.getElementById("custom-svg-display");
-    const svgCode = document.getElementById("custom-svg-code");
-    const generateBtn = document.getElementById("custom-generate-btn");
-    const editBtn = document.getElementById("custom-edit-btn");
-
-    const prompt = promptInput ? promptInput.value.trim() : "";
-    if (!prompt) {
-      alert("Merci de saisir une description pour générer le SVG.");
-      return;
-    }
-
-    promptHistory.length = 0;
-    promptHistory.push({ role: "user", content: prompt });
-
-    svgDisplay.innerHTML = `<span class="loading loading-ring loading-xl"></span>`;
-    generateBtn.disabled = true;
-    editBtn.disabled = true;
-
-    try {
-      const svgResponse = await fetchGeneratedSVG(promptHistory);
-      const matchSVG = svgResponse.content?.match(/<svg[\s\S]*?<\/svg>/i);
-      const svgContent = matchSVG ? matchSVG[0] : svgResponse.content || "";
-
-      promptHistory.push({ role: "assistant", content: svgContent });
-
-      svgCode.textContent = svgContent;
-      svgDisplay.innerHTML =
-        svgContent ||
-        `<span class="text-gray-400 italic">Aucun SVG généré.</span>`;
-      svgDisplay.style.display = "flex";
-    } catch (error) {
-      console.error("Erreur lors de la génération : ", error);
-      svgDisplay.innerHTML = `<span class="text-red-600">Erreur lors de la génération.</span>`;
-    } finally {
-      generateBtn.disabled = false;
-      editBtn.disabled = false;
-    }
-  }
-
-  async function onEditClick() {
-    const promptInput = document.getElementById("custom-prompt");
-    const svgDisplay = document.getElementById("custom-svg-display");
-    const svgCode = document.getElementById("custom-svg-code");
-    const generateBtn = document.getElementById("custom-generate-btn");
-    const editBtn = document.getElementById("custom-edit-btn");
-
-    const prompt = promptInput ? promptInput.value.trim() : "";
-    if (!prompt) {
-      alert("Merci de saisir une description pour modifier le SVG.");
-      return;
-    }
-
-    promptHistory.push({ role: "user", content: prompt });
-
-    svgDisplay.innerHTML += `<span class="loading loading-ring loading-xl"></span>`;
-    generateBtn.disabled = true;
-    editBtn.disabled = true;
-
-    try {
-      const svgResponse = await fetchGeneratedSVG(promptHistory);
-      const matchSVG = svgResponse.content?.match(/<svg[\s\S]*?<\/svg>/i);
-      const svgContent = matchSVG ? matchSVG[0] : svgResponse.content || "";
-
-      promptHistory.push({ role: "assistant", content: svgContent });
-
-      svgCode.textContent = svgContent;
-      svgDisplay.innerHTML = svgContent || svgDisplay.innerHTML;
-      svgDisplay.style.display = "flex";
-      console.log("Historique des prompts :", promptHistory);
-    } catch (error) {
-      console.error("Erreur lors de la modification :", error);
-      svgDisplay.innerHTML += `<span class="text-red-600">Erreur lors de la modification.</span>`;
-    } finally {
-      generateBtn.disabled = false;
-      editBtn.disabled = false;
-    }
-  }
-
-  async function onSaveClick() {
-    const svgCode = document.getElementById("custom-svg-code")?.textContent;
-    if (!svgCode || svgCode.trim() === "") {
-      alert("Aucun SVG à sauvegarder. Veuillez générer d'abord un SVG.");
-      return;
-    }
-
-    const name = prompt("Entrez un nom pour enregistrer le SVG :");
-    if (!name) return;
-
-    const params = {
-      name: name,
-      code_svg: svgCode,
-      chat_history: JSON.stringify(promptHistory),
-    };
-
-    try {
-      const token = localStorage.getItem("authToken");
-      const headers = { "Content-Type": "application/json" };
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-
-      const res = await fetch("/api/saveSVG", {
-        method: "POST",
-        headers,
-        body: JSON.stringify(params),
-        credentials: "include",
-      });
-
-      if (res.status === 401) {
-        alert("Vous devez être connecté pour sauvegarder.");
-        throw new Error("Unauthorized");
+          if (part === "branches") {
+            configData.templeColor = input.value;
+          } else if (part === "monture") {
+            configData.frameColor = input.value;
+          } else if (part === "verres") {
+            configData.lensColor = input.value;
+          }
+        });
       }
-
-      const data = await res.json();
-      alert("SVG sauvegardé avec succès !");
-    } catch (error) {
-      console.error("Erreur lors de la sauvegarde :", error);
-      alert("Erreur lors de la sauvegarde du SVG.");
-    }
-  }
-
-  // Initialisation des événements au chargement
-  document.addEventListener("DOMContentLoaded", () => {
-    const generateBtn = document.getElementById("custom-generate-btn");
-    const editBtn = document.getElementById("custom-edit-btn");
-    const saveBtn = document.getElementById("custom-save-btn");
-
-    if (generateBtn) generateBtn.addEventListener("click", onGenerateClick);
-    if (editBtn) editBtn.addEventListener("click", onEditClick);
-    if (saveBtn) saveBtn.addEventListener("click", onSaveClick);
+    });
   });
+
+  updateUI();
 </script>
