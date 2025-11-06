@@ -1,6 +1,7 @@
 ---
 import GlassesSVG from "./GlassesSVG.astro";
-import "../utils/pb"
+import ProgressBanner from "./ProgressBanner.astro";
+import "../utils/pb";
 import pb from "../utils/pb";
 ---
 
@@ -58,7 +59,7 @@ import pb from "../utils/pb";
               >
               <div class="grid grid-cols-2 gap-4">
                 {
-                    [
+                  [
                     {
                       id: "acetate",
                       name: "Acétate",
@@ -67,7 +68,7 @@ import pb from "../utils/pb";
                     { id: "metal", name: "Métal", desc: "Élégant et durable" },
                     {
                       id: "titanium",
-                      name: "Titane", 
+                      name: "Titane",
                       desc: "Premium et résistant",
                     },
                     { id: "wood", name: "Bois", desc: "Naturel et unique" },
@@ -132,9 +133,14 @@ import pb from "../utils/pb";
           <div class="step-content hidden" data-step="2">
             <h2 class="text-2xl text-gray-900 mb-6">Ajustez les dimensions</h2>
 
+            <ProgressBanner
+              title="Vous progressez bien !"
+              subtitle="Votre création prend forme avec précision."
+            />
+
             <div class="space-y-6">
               <div>
-                <label class="block text-sm text-gray-700 mb-3"
+                <label class="block text-sm text-green-700 mb-3"
                   >Largeur du pont : <span id="bridge-value">18</span>mm</label
                 >
                 <input
@@ -149,7 +155,7 @@ import pb from "../utils/pb";
               </div>
 
               <div>
-                <label class="block text-sm text-gray-700 mb-3"
+                <label class="block text-sm text-green-700 mb-3"
                   >Largeur des verres : <span id="lens-value">50</span>mm</label
                 >
                 <input
@@ -229,7 +235,7 @@ import pb from "../utils/pb";
                 <h3 class="text-lg text-gray-900">Configuration terminée</h3>
               </div>
               <p class="text-sm text-gray-600">
-                Vos lunettes sont prêtes ! Vous pouvez les exporter ou les télécharger.
+                Votre modèle unique est prêt ! Vous pouvez consulter vos modèles dans la page galerie.
               </p>
             </div>
 
@@ -250,27 +256,10 @@ import pb from "../utils/pb";
                     d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
                   ></path>
                 </svg>
-                Télécharger le fichier
+                Voir vos modèles dans la galerie
               </button>
 
-              <button
-                class="w-full bg-white border-2 border-[#2C7319] text-[#2C7319] hover:bg-green-50 py-4 rounded-xl transition-all flex items-center justify-center gap-2"
-              >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                  ></path>
-                </svg>
-                Recommencer
-              </button>
+              
             </div>
           </div>
         </div>
@@ -445,14 +434,18 @@ import pb from "../utils/pb";
         return existingRecords.items[0].id;
       }
 
-      const fieldName = collection === "mat_montures" ? "matiere_montures" : "matiere_branches";
+      const fieldName =
+        collection === "mat_montures" ? "matiere_montures" : "matiere_branches";
       const newRecord = await pb.collection(collection).create({
         [fieldName]: materialName,
       });
 
       return newRecord.id;
     } catch (error) {
-      console.error(`Erreur lors de la recherche/création du matériau dans ${collection}:`, error);
+      console.error(
+        `Erreur lors de la recherche/création du matériau dans ${collection}:`,
+        error,
+      );
       return null;
     }
   }
@@ -460,16 +453,19 @@ import pb from "../utils/pb";
   async function saveFrameMaterialToPocketBase() {
     try {
       const frameMaterial = document.querySelector(
-        'input[name="frameMaterial"]:checked'
+        'input[name="frameMaterial"]:checked',
       );
-      
+
       if (!frameMaterial) {
         console.warn("Aucun matériau de monture sélectionné");
         return;
       }
 
       const materialValue = frameMaterial.value;
-      const materialId = await findOrCreateMaterial(materialValue, "mat_montures");
+      const materialId = await findOrCreateMaterial(
+        materialValue,
+        "mat_montures",
+      );
 
       if (materialId) {
         configData.frameMaterialId = materialId;
@@ -477,23 +473,29 @@ import pb from "../utils/pb";
         console.log("Matériau de monture trouvé/créé avec ID:", materialId);
       }
     } catch (error) {
-      console.error("Erreur lors de l'enregistrement du matériau de monture:", error);
+      console.error(
+        "Erreur lors de l'enregistrement du matériau de monture:",
+        error,
+      );
     }
   }
 
   async function savebranchesMaterialToPocketBase() {
     try {
       const branchesMaterial = document.querySelector(
-        'input[name="branchesMaterial"]:checked'
+        'input[name="branchesMaterial"]:checked',
       );
-      
+
       if (!branchesMaterial) {
         console.warn("Aucun matériau de branches sélectionné");
         return;
       }
 
       const materialValue = branchesMaterial.value;
-      const materialId = await findOrCreateMaterial(materialValue, "mat_branches");
+      const materialId = await findOrCreateMaterial(
+        materialValue,
+        "mat_branches",
+      );
 
       if (materialId) {
         configData.branchesMaterialId = materialId;
@@ -501,14 +503,21 @@ import pb from "../utils/pb";
         console.log("Matériau de branches trouvé/créé avec ID:", materialId);
       }
     } catch (error) {
-      console.error("Erreur lors de l'enregistrement du matériau de branches:", error);
+      console.error(
+        "Erreur lors de l'enregistrement du matériau de branches:",
+        error,
+      );
     }
   }
 
   async function saveDimensionsToPocketBase() {
     try {
-      const bridgeValue = parseInt(document.getElementById("bridge-value")?.textContent || "18");
-      const lensValue = parseInt(document.getElementById("lens-value")?.textContent || "50");
+      const bridgeValue = parseInt(
+        document.getElementById("bridge-value")?.textContent || "18",
+      );
+      const lensValue = parseInt(
+        document.getElementById("lens-value")?.textContent || "50",
+      );
 
       if (!bridgeValue || !lensValue) {
         console.warn("Valeurs de dimensions manquantes");
@@ -529,9 +538,10 @@ import pb from "../utils/pb";
   }
 
   function getSVGCode() {
-    const svgElement = document.querySelector('#glasses-preview svg') || 
-                       document.querySelector('svg#glasses-svg');
-    
+    const svgElement =
+      document.querySelector("#glasses-preview svg") ||
+      document.querySelector("svg#glasses-svg");
+
     if (!svgElement) {
       console.warn("Élément SVG introuvable");
       return null;
@@ -545,7 +555,7 @@ import pb from "../utils/pb";
       const frameColorInput = document.getElementById("frame-color");
       const templeColorInput = document.getElementById("temple-color");
       const lensColorInput = document.getElementById("lens-color");
-      
+
       if (!frameColorInput || !templeColorInput || !lensColorInput) {
         console.warn("Inputs couleur introuvables");
         return;
@@ -575,7 +585,10 @@ import pb from "../utils/pb";
       configData.templeColor = templeColorValue;
       configData.lensColor = lensColorValue;
     } catch (error) {
-      console.error("Erreur lors de l'enregistrement des couleurs et relations:", error);
+      console.error(
+        "Erreur lors de l'enregistrement des couleurs et relations:",
+        error,
+      );
     }
   }
 
@@ -678,6 +691,4 @@ import pb from "../utils/pb";
   });
 
   updateUI();
-
-  
 </script>

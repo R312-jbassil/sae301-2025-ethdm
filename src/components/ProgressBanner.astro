@@ -1,0 +1,35 @@
+---
+// Props
+interface Props {
+  title: string;
+  subtitle: string;
+  icon?: 'check' | 'info' | 'warning';
+}
+
+const { title, subtitle, icon = 'check' } = Astro.props;
+
+// Icon styles
+const iconStyles = {
+  check: 'w-6 h-6 text-green-600',
+};
+
+const iconSVG = {
+  check: '<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" /><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 12l2 2 4-4" fill="none" />',
+};
+---
+
+<div class="flex items-center gap-3 p-4 bg-green-50 rounded-lg border border-green-200 max-w-2xl">
+  <div class="flex-shrink-0">
+    <svg class={iconStyles[icon]} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <Fragment set:html={iconSVG[icon]} />
+    </svg>
+  </div>
+
+  <div class="flex flex-col">
+    <p class="font-semibold text-green-700">{title}</p>
+    <p class="text-sm text-gray-700">{subtitle}</p>
+  </div>
+</div>
+
+<style>
+</style>
